@@ -15,7 +15,7 @@ const navItems = [
 const Sidebar = ({ isOpen, onClose, isCollapsed }: SidebarProps) => {
   return (
     <>
-      {/* Overlay oscuro solo en móvil cuando el sidebar está abierto */}
+      {/* Overlay oscuro solo en móvil cuando el sidebar está expandido */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 md:hidden"
@@ -24,14 +24,19 @@ const Sidebar = ({ isOpen, onClose, isCollapsed }: SidebarProps) => {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-white flex flex-col
-        transform transition-all duration-200 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        md:static md:translate-x-0
+        className={`inset-y-0 left-0 z-40 bg-slate-900 text-white flex flex-col
+        transition-all duration-200 ease-in-out
+        ${isOpen ? "fixed w-64" : "static w-20"}
+        md:static
         ${isCollapsed ? "md:w-20" : "md:w-64"}`}
       >
         <div className="p-6 text-2xl font-bold border-b border-slate-700 whitespace-nowrap overflow-hidden">
-          {isCollapsed ? "MC" : "MultiCatálogo"}
+          <span className={`${isOpen ? "hidden" : "inline"} ${isCollapsed ? "md:inline" : "md:hidden"}`}>
+            MC
+          </span>
+          <span className={`${isOpen ? "inline" : "hidden"} ${isCollapsed ? "md:hidden" : "md:inline"}`}>
+            MultiCatálogo
+          </span>
         </div>
         <nav className="flex-1 p-4 space-y-2">
           {navItems.map((item) => (
@@ -39,13 +44,19 @@ const Sidebar = ({ isOpen, onClose, isCollapsed }: SidebarProps) => {
               key={item.to}
               to={item.to}
               onClick={onClose}
-              title={isCollapsed ? item.label : undefined}
+              title={item.label}
               className={`flex items-center gap-3 p-3 rounded hover:bg-slate-800 transition ${
-                isCollapsed ? "md:justify-center" : ""
-              }`}
+                isOpen ? "" : "justify-center"
+              } ${isCollapsed ? "md:justify-center" : "md:justify-start"}`}
             >
               <span className="text-xl shrink-0">{item.icon}</span>
-              <span className={isCollapsed ? "md:hidden" : ""}>{item.label}</span>
+              <span
+                className={`${isOpen ? "inline" : "hidden"} ${
+                  isCollapsed ? "md:hidden" : "md:inline"
+                }`}
+              >
+                {item.label}
+              </span>
             </Link>
           ))}
         </nav>
