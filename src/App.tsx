@@ -7,6 +7,7 @@ import Carrito from './components/Carrito';
 import Login from './components/Login';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { LayoutProvider } from './context/LayoutContext';
 // Componente para proteger las rutas privadas
 const ProtectedRoute = () => {
  const { isAuthenticated } = useAuth();
@@ -23,6 +24,7 @@ function App() {
  return (
  <AuthProvider> {/* Proveedor de Autenticación */}
  <CartProvider> {/* Proveedor del Carrito */}
+ <LayoutProvider> {/* Estado global del Sidebar/Navbar */}
  <BrowserRouter>
  <Routes>
  {/* Ruta pública */}
@@ -41,6 +43,7 @@ function App() {
  <Route path="*" element={<Navigate to="/" replace />} />
  </Routes>
  </BrowserRouter>
+ </LayoutProvider>
  </CartProvider>
  </AuthProvider>
  );
