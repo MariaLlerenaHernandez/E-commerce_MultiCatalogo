@@ -1,18 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useLayout } from "../context/LayoutContext";
 
-interface NavbarProps {
-  onMenuClick: () => void;
-  onToggleCollapse: () => void;
-  isCollapsed: boolean;
-}
-
-const Navbar = ({
-  onMenuClick,
-  onToggleCollapse,
-  isCollapsed,
-}: NavbarProps) => {
+const Navbar = () => {
+  const { isCollapsed, toggleCollapse, openSidebar } = useLayout();
   const { totalItems } = useCart();
   const { logout, userEmail } = useAuth();
   const navigate = useNavigate();
@@ -24,13 +16,13 @@ const Navbar = ({
     <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8">
       <div className="flex items-center gap-4 min-w-0">
         <button
-          onClick={onMenuClick}
+          onClick={openSidebar}
           className="md:hidden text-2xl text-slate-600 shrink-0"
         >
           ☰
         </button>
         <button
-          onClick={onToggleCollapse}
+          onClick={toggleCollapse}
           className="hidden md:inline-flex text-2xl text-slate-600 shrink-0"
           title={isCollapsed ? "Expandir menú" : "Colapsar menú"}
         >
