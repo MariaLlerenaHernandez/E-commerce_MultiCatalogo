@@ -1,32 +1,27 @@
-import { useCart } from "../context/CartContext";
+import { useEffect, useState } from "react";
+import { useCart, type Producto } from "../context/CartContext";
+import { API_URL } from "../config";
+
 const Catalogo = () => {
-  const { addToCart } = useCart(); // <-- Usamos la función del contexto
-  const productos = [
-    {
-      id: 1,
-      nombre: "Serum Revitalizante",
-      precio: 45.0,
-      img: "https://picsum.photos/seed/serum/150",
-    },
-    {
-      id: 2,
-      nombre: "Crema Hidratante Pro",
-      precio: 32.5,
-      img: "https://picsum.photos/seed/crema/150",
-    },
-    {
-      id: 3,
-      nombre: "Tónico Purificante",
-      precio: 28.0,
-      img: "https://picsum.photos/seed/tonico/150",
-    },
-    {
-      id: 4,
-      nombre: "Mascarilla Nocturna",
-      precio: 50.0,
-      img: "https://picsum.photos/seed/mascarilla/150",
-    },
-  ];
+  const { addToCart } = useCart();
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+
+  // Al montar el componente, pedimos los productos al backend
+  useEffect(() => {
+    fetch(`${API_URL}/api/productos`)
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data: Producto[]) => setProductos(data))
+      .catch(() => setError("No se pudieron cargar los productos"))
+      .finally(() => setCargando(false));
+  }, []);
+
+  if (cargando) return <p className="text-slate-500">Cargando productos...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
   return (
     <div>
       <h1 className="text-2xl font-bold text-slate-800 mb-6">
