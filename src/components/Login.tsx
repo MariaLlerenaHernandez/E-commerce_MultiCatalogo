@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -9,18 +10,32 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { login } = useAuth();
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Simulación de validación hardcodeada (A futuro se reemplazará por llamada a API)
-    if (email === "admin@upse.edu.ec" && password === "123456") {
-      setError("");
-      login(email); // Cambiamos el estado global a autenticado
-      navigate("/"); // Redirigimos al Dashboard
-    } else {
-      setError("Credenciales incorrectas. Usa admin@upse.edu.ec / 123456");
+    try {
+      // Enviamos las credenciales al backend en Go
+      const res = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setError("");
+        login(data.email); // Estado global: autenticado con el correo que devuelve la API
+        navigate("/");
+      } else {
+        // 401: mostramos el mensaje que manda el servidor
+        setError(data.error);
+      }
+    } catch {
+      // El servidor no responde (apagado o sin red)
+      setError("No se pudo conectar con el servidor");
     }
   };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-slate-100
