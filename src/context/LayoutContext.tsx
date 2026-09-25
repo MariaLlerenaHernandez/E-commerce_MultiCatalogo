@@ -7,6 +7,7 @@ interface LayoutContextType {
   sidebarOpen: boolean; // Drawer abierto en móvil
   openSidebar: () => void;
   closeSidebar: () => void;
+  toggleSidebar: () => void; // Toggle móvil sidebar
 }
 
 // 2. Creamos el contexto
@@ -33,10 +34,11 @@ export const LayoutProvider = ({ children }: LayoutProviderProps) => {
   const toggleCollapse = () => setIsCollapsed((prev) => !prev);
   const openSidebar = () => setSidebarOpen(true);
   const closeSidebar = () => setSidebarOpen(false);
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
   return (
     <LayoutContext.Provider
-      value={{ isCollapsed, toggleCollapse, sidebarOpen, openSidebar, closeSidebar }}
+      value={{ isCollapsed, toggleCollapse, sidebarOpen, openSidebar, closeSidebar, toggleSidebar }}
     >
       {children}
     </LayoutContext.Provider>
