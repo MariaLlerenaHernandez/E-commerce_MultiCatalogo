@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { getProductos } from '../services/productosService';
-import { categorias, type Producto } from '../data/productos';
+import { type Producto } from '../data/productos';
 
 const Catalogo = () => {
   const { addToCart } = useCart();
@@ -44,6 +44,15 @@ const Catalogo = () => {
     });
   }, [productos, busqueda, categoria]);
 
+  // Categorías dinámicas a partir de los productos reales cargados
+  const listaCategorias = useMemo(() => {
+    const cats = new Set<string>();
+    productos.forEach((p) => {
+      if (p.categoria) cats.add(p.categoria);
+    });
+    return Array.from(cats);
+  }, [productos]);
+
   const handleCategoriaChange = (value: string) => {
     setCategoria(value);
     // Sincronizamos el query string para que la URL sea compartible
@@ -55,32 +64,52 @@ const Catalogo = () => {
   };
 
   if (loading) {
-    return <div className="text-center p-8">Cargando catálogo...</div>;
+    return (
+      <div className="p-12 text-center text-slate-500 flex flex-col items-center justify-center min-h-[350px]">
+        <div className="w-9 h-9 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+        <span className="text-sm font-medium">Cargando catálogo botánico de skincare...</span>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-2">Catálogo de Productos</h1>
-      <p className="text-slate-500 mb-6">
-        {productosFiltrados.length} producto(s) encontrado(s)
-      </p>
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+            Catálogo de Productos
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Fórmulas de cuidado de la piel inspiradas en la naturaleza, pureza botánica e ingredientes activos.
+          </p>
+        </div>
+        <span className="text-xs font-semibold px-3 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-full self-start sm:self-auto">
+          {productosFiltrados.length} productos disponibles
+        </span>
+      </div>
 
       {/* ===== BARRA DE BÚSQUEDA Y FILTROS ===== */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <input
-          type="text"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          placeholder="Buscar por nombre o descripción..."
-          className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
-        />
+      <div className="flex flex-col md:flex-row gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div className="relative flex-1">
+          <svg className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            placeholder="Buscar por nombre, extracto botánico o descripción..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-purple-600 focus:bg-white outline-none transition"
+          />
+        </div>
+
         <select
           value={categoria}
           onChange={(e) => handleCategoriaChange(e.target.value)}
-          className="px-4 py-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
+          className="px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-sm font-medium focus:ring-2 focus:ring-purple-600 focus:bg-white outline-none transition cursor-pointer"
         >
-          <option value="Todas">Todas las categorías</option>
-          {categorias.map((cat) => (
+          <option value="Todas">Todas las categorías ({productos.length})</option>
+          {listaCategorias.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>
