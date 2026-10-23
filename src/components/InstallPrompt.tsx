@@ -7,7 +7,9 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const InstallPrompt = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(() => {
+    return (window as unknown as { deferredInstallPrompt?: BeforeInstallPromptEvent }).deferredInstallPrompt || null;
+  });
   const [isStandalone, setIsStandalone] = useState(false);
   const [mostrarAyuda, setMostrarAyuda] = useState(false);
 
@@ -23,6 +25,7 @@ const InstallPrompt = () => {
 
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
+      (window as unknown as { deferredInstallPrompt?: BeforeInstallPromptEvent }).deferredInstallPrompt = e as BeforeInstallPromptEvent;
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
