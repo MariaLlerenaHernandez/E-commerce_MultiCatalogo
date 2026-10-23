@@ -488,18 +488,20 @@ const AdminProductos = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-bold uppercase text-slate-500 tracking-wider">
-                <th className="px-6 py-4">Producto</th>
-                <th className="px-6 py-4">Categoría</th>
-                <th className="px-6 py-4">Precio</th>
-                <th className="px-6 py-4">Disponibilidad</th>
-                <th className="px-6 py-4">Estado</th>
+                <th className="px-4 py-4 text-center w-16">ID</th>
+                <th className="px-4 py-4 text-center w-20">Imagen</th>
+                <th className="px-6 py-4">Nombre</th>
+                <th className="px-4 py-4">Categoría</th>
+                <th className="px-4 py-4">Precio</th>
+                <th className="px-4 py-4">Stock</th>
+                <th className="px-4 py-4 text-center">Estado</th>
                 <th className="px-6 py-4 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
               {productosFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-400">
+                  <td colSpan={8} className="px-6 py-12 text-center text-slate-400">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <span className="text-3xl">🔍</span>
                       <p className="font-semibold text-slate-700">No se encontraron productos</p>
@@ -529,52 +531,58 @@ const AdminProductos = () => {
                       key={p.id}
                       className="hover:bg-purple-50/30 transition-colors duration-150 group"
                     >
-                      {/* Columna Producto: Imagen + Info */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-2xs flex-shrink-0 group-hover:shadow-sm transition">
-                            <img
-                              src={p.img || "https://picsum.photos/seed/product/150"}
-                              alt={p.nombre}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src =
-                                  "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=150&auto=format&fit=crop&q=60";
-                              }}
-                            />
-                            <span className="absolute bottom-1 right-1 text-[9px] font-mono bg-black/60 text-white px-1 rounded-sm">
-                              #{p.id}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="font-bold text-slate-800 block text-base group-hover:text-purple-700 transition">
-                              {p.nombre}
-                            </span>
-                            {p.descripcion && (
-                              <p className="text-xs text-slate-500 line-clamp-1 max-w-xs mt-0.5">
-                                {p.descripcion}
-                              </p>
-                            )}
-                          </div>
+                      {/* 1. Columna ID */}
+                      <td className="px-4 py-4 text-center">
+                        <span className="inline-block px-2.5 py-1 text-xs font-mono font-bold text-slate-700 bg-slate-100/80 rounded-lg border border-slate-200">
+                          #{p.id}
+                        </span>
+                      </td>
+
+                      {/* 2. Columna Imagen */}
+                      <td className="px-4 py-4 text-center">
+                        <div className="relative w-12 h-12 mx-auto rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-2xs group-hover:shadow-sm transition">
+                          <img
+                            src={p.img || "https://picsum.photos/seed/product/150"}
+                            alt={p.nombre}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=150&auto=format&fit=crop&q=60";
+                            }}
+                          />
                         </div>
                       </td>
 
-                      {/* Categoría */}
+                      {/* 3. Columna Nombre */}
                       <td className="px-6 py-4">
+                        <div>
+                          <span className="font-bold text-slate-800 block text-base group-hover:text-purple-700 transition">
+                            {p.nombre}
+                          </span>
+                          {p.descripcion && (
+                            <p className="text-xs text-slate-500 line-clamp-1 max-w-sm mt-0.5">
+                              {p.descripcion}
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* 4. Categoría */}
+                      <td className="px-4 py-4">
                         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
                           {p.categoria || "General"}
                         </span>
                       </td>
 
-                      {/* Precio */}
-                      <td className="px-6 py-4">
+                      {/* 5. Precio */}
+                      <td className="px-4 py-4">
                         <span className="text-base font-extrabold text-slate-900">
                           ${Number(p.precio).toFixed(2)}
                         </span>
                       </td>
 
-                      {/* Stock / Disponibilidad */}
-                      <td className="px-6 py-4">
+                      {/* 6. Stock / Disponibilidad */}
+                      <td className="px-4 py-4">
                         {isOutOfStock ? (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
@@ -593,15 +601,15 @@ const AdminProductos = () => {
                         )}
                       </td>
 
-                      {/* Estado */}
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      {/* 7. Estado */}
+                      <td className="px-4 py-4 text-center">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                           Activo
                         </span>
                       </td>
 
-                      {/* Acciones */}
+                      {/* 8. Acciones */}
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
