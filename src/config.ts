@@ -1,2 +1,6 @@
-// Usa el mismo host desde el que se abrió el frontend, así funciona en la PC (localhost) y en el celular (192.168.1.102)
-export const API_URL = `http://${window.location.hostname}:3000`;
+// En desarrollo local apunta a :3000; en producción (Render) utiliza VITE_API_URL o la raíz relativa del dominio
+export const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV
+    ? `http://${window.location.hostname}:3000`
+    : "");

@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+app
