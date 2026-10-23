@@ -1,0 +1,65 @@
+# render.yaml - Configuración Blueprint para despliegue en Render
+services:
+  # 1. Backend API (Go Fiber)
+  - type: web
+    name: multicatalogo-backend
+    runtime: go
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: go build -o app .
+    startCommand: ./app
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        fromDatabase:
+          name: multicatalogo-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: multicatalogo-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: multicatalogo-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: multicatalogo-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: multicatalogo-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: "https://*.onrender.com, http://localhost:5173"
+
+  # 2. Frontend Web App / PWA (React + Vite)
+  - type: web
+    name: multicatalogo-frontend
+    runtime: static
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: multicatalogo-backend
+          property: host
+
+# 3. Base de Datos PostgreSQL
+databases:
+  - name: multicatalogo-db
+    plan: free
+    region: oregon
+    databaseName: multicatalogo
+    user: multicatalogo
