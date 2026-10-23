@@ -46,7 +46,7 @@ git push origin main
 ## ⚙️ Paso 3: Crear el Servicio Web del Backend (Go)
 
 1. En Render, clic en **New +** -> **Web Service**.
-2. Conecta tu repositorio de GitHub `Sistemas_Incidencias` (o el nombre de tu repo).
+2. Conecta tu repositorio de GitHub `E-commerce_MultiCatalogo`.
 3. Configuración del servicio:
    - **Name:** `multicatalogo-backend`
    - **Region:** Misma región que la base de datos (ej. `Oregon`)
