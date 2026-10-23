@@ -36,6 +36,11 @@ services:
         generateValue: true
       - key: CORS_ORIGIN
         value: "https://*.onrender.com, http://localhost:5173"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: multicatalogo-cache
+          property: connectionString
 
   # 2. Frontend Web App / PWA (React + Vite)
   - type: web
@@ -54,7 +59,14 @@ services:
           name: multicatalogo-backend
           property: host
 
-# 3. Base de Datos PostgreSQL
+  # 3. Redis / Key Value Cache (Caché en memoria)
+  - type: keyvalue
+    name: multicatalogo-cache
+    plan: free
+    region: oregon
+    ipAllowList: []
+
+# 4. Base de Datos PostgreSQL
 databases:
   - name: multicatalogo-db
     plan: free
