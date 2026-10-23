@@ -30,13 +30,13 @@ const Login = () => {
         setError("");
         // La API devuelve el rol (admin | cliente) junto al correo (Tema 5)
         const rol: Rol = data.rol === "admin" ? "admin" : "cliente";
-        login({ email: data.email, rol });
+        login({ email: data.email, rol, nombre: data.nombre }, data.token);
 
         // Redirigimos según el rol: admin al Dashboard, cliente a la Tienda
         navigate(rol === "admin" ? "/" : "/tienda");
       } else {
-        // 401: mostramos el mensaje que manda el servidor
-        setError(data.error);
+        // 401: mostramos el mensaje que manda el servidor (soporta APIError y legacy)
+        setError(data.message || data.error || "Error de autenticación");
       }
     } catch {
       // El servidor no responde (apagado o sin red)
@@ -101,7 +101,16 @@ const Login = () => {
           </button>
         </form>
 
-        <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 space-y-1">
+        <div className="mt-6 text-center">
+          <p className="text-sm text-slate-600">
+            ¿No tienes cuenta?{" "}
+            <a href="/registro" className="text-indigo-600 font-semibold hover:underline">
+              Crear Cuenta
+            </a>
+          </p>
+        </div>
+
+        <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 space-y-1">
           <p className="font-semibold text-slate-700">Cuentas de prueba:</p>
           <p>👑 Admin: <span className="font-mono">admin@upse.edu.ec / 123456</span></p>
           <p>🛍️ Cliente: <span className="font-mono">cliente@upse.edu.ec / 123456</span></p>
