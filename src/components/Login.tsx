@@ -38,9 +38,11 @@ const Login = () => {
         // 401: mostramos el mensaje que manda el servidor (soporta APIError y legacy)
         setError(data.message || data.error || "Error de autenticación");
       }
-    } catch {
-      // El servidor no responde (apagado o sin red)
-      setError("No se pudo conectar con el servidor");
+    } catch (err: unknown) {
+      // El servidor no responde o hay error de red
+      console.error("Error en petición de login:", err);
+      const detail = err instanceof Error ? err.message : String(err);
+      setError(`No se pudo conectar con el servidor: ${detail}`);
     } finally {
       // Se ejecuta siempre, haya éxito o error
       setLoading(false);
