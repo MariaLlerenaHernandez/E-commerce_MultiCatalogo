@@ -1,0 +1,25 @@
+# Reglas del agente — Practica03_MultiCatalogo
+
+## Contexto
+Motor backend en Go + Fiber (`backend/`) para un SaaS multinivel. El frontend React (`src/`) ya está terminado y consume la API en el puerto 3000. Trabaja SOLO el backend salvo que se indique lo contrario. Prohibido cambiar firmas de endpoints existentes (`/api/login`, `/api/productos`, `/api/red`) o la forma de los JSON que el frontend espera.
+
+## Reglas estrictas
+1. Navegación: NUNCA hagas escaneos recursivos ni leas carpetas completas. Consulta primero `PROJECT_MAP.md` para ubicar el archivo exacto antes de leer código.
+2. Seguimiento de tareas: Al iniciar cualquier sesión o tarea, lee PRIMERO `REQUIREMENTS_CHECKLIST.md` para conocer el estado y qué falta por implementar. No explores el código para adivinar el progreso.
+3. Actualización continua: Cada vez que completes una tarea, prueba o endpoint con éxito, debes actualizar inmediatamente `REQUIREMENTS_CHECKLIST.md` marcando la casilla correspondiente (`- [x]`) y actualizando la sección de estado. Si cambia la estructura de archivos o endpoints, actualiza también `PROJECT_MAP.md`.
+4. Ahorro de tokens: Lee únicamente los archivos que vas a modificar de forma puntual. Prohibido reescribir archivos enteros si solo cambia una función.
+
+## Directivas de ahorro de tokens (MCP)
+### Playwright
+- NUNCA tomes capturas de pantalla ni pidas el DOM completo/HTML de la página.
+- Extrae únicamente el texto visible o el selector CSS puntual del elemento que se testea.
+- Para verificar APIs o respuestas JSON, usa peticiones HTTP directas en lugar de abrir el navegador.
+### Memory
+- Guarda en memoria persistente ÚNICAMENTE: (1) causa raíz y solución final de errores de configuración o entorno recurrentes; (2) puertos locales y variables clave del proyecto.
+- PROHIBIDO guardar código fuente completo, stack traces o historial de chat.
+### Errores y pruebas
+- Si una prueba falla, ejecuta SOLO ese test individual, nunca la suite completa.
+- Si el mismo error persiste tras 2 intentos de solución, DETENTE y explica la hipótesis conceptual antes de editar más archivos.
+
+## Arquitectura backend
+`routes.go` define endpoints → `controllers` maneja HTTP → `repository` maneja datos → `models` define estructuras. Todas las respuestas de error usan `models.APIError`.
