@@ -381,7 +381,7 @@ type PostgresTransaction struct {
 }
 
 // InsertarPedido implementa Transaction
-func (tx *PostgresTransaction) InsertarPedido(pedido models.Pedido) error {
+func (tx *PostgresTransaction) InsertarPedido(pedido *models.Pedido) error {
 	query := `
 		INSERT INTO pedidos (numero, usuario_id, email, nombre, direccion, ciudad, telefono, metodo_pago, total, estado)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)

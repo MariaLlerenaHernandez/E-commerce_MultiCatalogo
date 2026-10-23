@@ -40,7 +40,7 @@ type OrderRepository interface {
 
 // Transaction define la interfaz para manejar transacciones ACID
 type Transaction interface {
-	InsertarPedido(pedido models.Pedido) error
+	InsertarPedido(pedido *models.Pedido) error
 	InsertarPedidoItems(items []models.PedidoItem) error
 	Commit() error
 	Rollback() error

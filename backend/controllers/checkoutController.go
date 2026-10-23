@@ -72,11 +72,17 @@ func (ctrl *CheckoutController) ProcesarCheckout(c *fiber.Ctx) error {
 		})
 	}
 
-	// Calcular total
+	// Calcular total y subtotales por item
 	total := 0.0
-	for _, item := range req.Items {
-		total += item.Precio * float64(item.Cantidad)
+	for i := range req.Items {
+		if req.Items[i].Subtotal == 0 {
+			req.Items[i].Subtotal = req.Items[i].Precio * float64(req.Items[i].Cantidad)
+		}
+		total += req.Items[i].Subtotal
 	}
+
+	// Generar número de pedido ANTES de la transacción (campo UNIQUE NOT NULL en la BD)
+	numeroPedido := fmt.Sprintf("MC-%d", time.Now().UnixNano()%1000000)
 
 	// === INICIO DE TRANSACCIÓN ACID ===
 	tx, err := ctrl.orderRepo.BeginTransaction()
@@ -98,6 +104,7 @@ func (ctrl *CheckoutController) ProcesarCheckout(c *fiber.Ctx) error {
 
 	// Paso 1: Insertar pedido principal vinculado al usuario autenticado
 	pedido := models.Pedido{
+		Numero:     numeroPedido,
 		UsuarioID:  tokenUserID,
 		Email:      req.Email,
 		Nombre:     req.Nombre,
@@ -110,7 +117,7 @@ func (ctrl *CheckoutController) ProcesarCheckout(c *fiber.Ctx) error {
 		Estado:     "pendiente",
 	}
 
-	if err := tx.InsertarPedido(pedido); err != nil {
+	if err := tx.InsertarPedido(&pedido); err != nil {
 		tx.Rollback()
 		return c.Status(fiber.StatusInternalServerError).JSON(models.APIError{
 			Status:  fiber.StatusInternalServerError,
@@ -123,7 +130,12 @@ func (ctrl *CheckoutController) ProcesarCheckout(c *fiber.Ctx) error {
 	// Uncomment para simular falla en clase:
 	// return errors.New("FALLA SIMULADA: Caída del sistema antes de procesar items")
 
-	// Paso 2: Insertar items del pedido (con control de stock)
+	// Paso 2: Vincular el pedido_id real a cada item antes de insertarlos
+	for i := range req.Items {
+		req.Items[i].PedidoID = pedido.ID
+	}
+
+	// Paso 3: Insertar items del pedido (con control de stock)
 	if err := tx.InsertarPedidoItems(req.Items); err != nil {
 		tx.Rollback()
 		status := fiber.StatusBadRequest
@@ -143,7 +155,7 @@ func (ctrl *CheckoutController) ProcesarCheckout(c *fiber.Ctx) error {
 		})
 	}
 
-	// Paso 3: COMMIT de la transacción
+	// Paso 4: COMMIT de la transacción
 	if err := tx.Commit(); err != nil {
 		tx.Rollback()
 		return c.Status(fiber.StatusInternalServerError).JSON(models.APIError{
@@ -163,7 +175,6 @@ func (ctrl *CheckoutController) ProcesarCheckout(c *fiber.Ctx) error {
 	ctrl.cache.Delete(cacheKey)
 
 	// Retornar respuesta exitosa
-	numeroPedido := fmt.Sprintf("MC-%d", time.Now().UnixNano()%1000000)
 	return c.Status(fiber.StatusCreated).JSON(models.CheckoutResponse{
 		NumeroPedido: numeroPedido,
 		Total:        total,

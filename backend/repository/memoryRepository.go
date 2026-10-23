@@ -25,11 +25,11 @@ type MemoryTransaction struct {
 }
 
 // InsertarPedido simula la inserción del pedido principal
-func (tx *MemoryTransaction) InsertarPedido(pedido models.Pedido) error {
+func (tx *MemoryTransaction) InsertarPedido(pedido *models.Pedido) error {
 	if tx.committed || tx.rolledBack {
 		return errors.New("transacción ya finalizada")
 	}
-	tx.pedidoGuardado = &pedido
+	tx.pedidoGuardado = pedido
 	return nil
 }
 
