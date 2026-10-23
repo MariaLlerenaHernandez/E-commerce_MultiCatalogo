@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sin conexión - MultiCatálogo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    button {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📡 Sin conexión</h1>
+    <p>Parece que no tienes conexión a internet. Por favor verifica tu conexión y vuelve a intentarlo.</p>
+    <button onclick="window.location.reload()">Reintentar</button>
+  </div>
+</body>
+</html>

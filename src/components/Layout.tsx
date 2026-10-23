@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
+import InstallPrompt from "./InstallPrompt";
 import { useLayout } from "../context/LayoutContext";
 
 const Layout = () => {
@@ -25,6 +26,7 @@ const Layout = () => {
           <Outlet />
         </main>
       </div>
+      <InstallPrompt />
     </div>
   );
 };

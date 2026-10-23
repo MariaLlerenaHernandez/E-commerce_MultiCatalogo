@@ -1,0 +1,5 @@
+Placeholder icon 192x192 - Replace with real icon
+This is a placeholder file. For a real PWA, you need to:
+1. Create a 192x192 PNG icon for your app
+2. Save it as icon-192x192.png in public/icons/
+3. Use a logo or design that represents MultiCatálogo
