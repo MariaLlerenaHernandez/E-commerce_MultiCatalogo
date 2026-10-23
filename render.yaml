@@ -41,8 +41,6 @@ services:
   - type: web
     name: multicatalogo-frontend
     runtime: static
-    plan: free
-    region: oregon
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     routes:
